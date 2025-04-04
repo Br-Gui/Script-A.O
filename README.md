@@ -48,6 +48,7 @@ Este Script utiliza **visão computacional** para detectar um nome específico n
 
 ## Notas
 - O desempenho pode variar dependendo da resolução da tela e configurações do jogo.
+- O Programa foi desemvolvido para a resolução Full HD (1920×1080), se deseja utilizar outra resolução sugiro que troque no código.
 - Certifique-se de que o Tesseract OCR está instalado corretamente.
 
 ## Aviso Legal
