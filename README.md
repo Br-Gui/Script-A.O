@@ -1,7 +1,7 @@
-# Script: Movimentos Automaticos
+# Script: Movimentos Automáticos
 
 ## Descrição
-Este projeto utiliza **visão computacional** para detectar um nome específico na tela e interagir automaticamente com ele, realizando **cliques e comandos de teclado**. Além disso, permite que o usuário pause e retome a execução a qualquer momento.
+Este Script utiliza **visão computacional** para detectar um nome específico na tela e interagir automaticamente com ele, realizando **cliques e comandos de teclado**. Além disso, permite que o usuário pause e retome a execução a qualquer momento.
 
 ## Funcionalidades
 - **Detecção de nome na tela** usando OCR (Tesseract)
@@ -34,13 +34,17 @@ Este projeto utiliza **visão computacional** para detectar um nome específico 
      ```
 
 ## Uso
-1. **Execute o script**:
+1. **Edite o código para mudar o nome do personagem** que deseja detectar:
+   ```python
+   NOME_ALVO = "NomeDoPersonagem"
+   ```
+2. **Execute o script**:
    ```sh
    python main.py
    ```
-2. O programa procurará pelo nome especificado na tela e interagirá automaticamente.
-3. Para **pausar**, pressione **F8**.
-4. Para **retomar**, pressione **F9**.
+3. O programa procurará pelo nome especificado na tela e interagirá automaticamente.
+4. Para **pausar**, pressione **F8**.
+5. Para **retomar**, pressione **F9**.
 
 ## Notas
 - O desempenho pode variar dependendo da resolução da tela e configurações do jogo.
