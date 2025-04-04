@@ -1,4 +1,4 @@
-# Projeto: IA de Cliques e Movimentos
+# Script: Movimentos Automaticos
 
 ## Descrição
 Este projeto utiliza **visão computacional** para detectar um nome específico na tela e interagir automaticamente com ele, realizando **cliques e comandos de teclado**. Além disso, permite que o usuário pause e retome a execução a qualquer momento.
