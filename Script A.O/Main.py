@@ -4,9 +4,21 @@ import pyautogui
 import pytesseract
 import time
 import random
+import keyboard
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 NOME_ALVO = "Yuuki99"
+
+executando = True
+
+def toggle_execucao():
+    global executando
+    executando = not executando
+    estado = "Rodando" if executando else "Pausado"
+    print(f"Status: {estado}")
+
+keyboard.add_hotkey("F8", lambda: toggle_execucao())  # Tecla para PAUSAR
+keyboard.add_hotkey("F9", lambda: toggle_execucao())  # Tecla para RETOMAR
 
 def localizar_texto():
     screenshot = pyautogui.screenshot()
@@ -72,5 +84,6 @@ def executar_acoes():
         print("Nome não encontrado na tela. Tentando novamente...")
 
 while True:
-    executar_acoes()
+    if executando:
+        executar_acoes()
     time.sleep(random.uniform(5, 10))
