@@ -44,15 +44,15 @@ HEAL_W_THRESHOLD = 65           # Usar 'W' (ex: cura média) se vida <= X%
 HEAL_E_THRESHOLD = 45           # Usar 'E' (ex: cura forte) se vida <= X%
 
 # --- Timing & Humanização (Mais Lento e Aleatório) ---
-MIN_REACTION_TIME = 0.5         # Min seg antes de uma ação
+MIN_REACTION_TIME = 0.7         # Min seg antes de uma ação
 MAX_REACTION_TIME = 1.5         # Max seg antes de uma ação
-MOUSE_MOVE_MIN_DURATION = 0.3   # Min seg para mover mouse
+MOUSE_MOVE_MIN_DURATION = 0.5   # Min seg para mover mouse
 MOUSE_MOVE_MAX_DURATION = 0.9   # Max seg para mover mouse
 MOUSE_COORD_OFFSET = 5          # Variação no clique
 LOOP_SLEEP_MIN = 3.0            # Min seg de pausa quando inativo
 LOOP_SLEEP_MAX = 7.0            # Max seg de pausa quando inativo
 ACTION_DELAY_MIN = 0.25         # Min seg entre pressionar teclas
-ACTION_DELAY_MAX = 0.6          # Max seg entre pressionar teclas
+ACTION_DELAY_MAX = 0.8          # Max seg entre pressionar teclas
 CYCLE_DELAY_MIN = 1.0           # Min seg entre ciclos de verificação ATIVOS
 CYCLE_DELAY_MAX = 2.5           # Max seg entre ciclos de verificação ATIVOS
 
