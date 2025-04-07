@@ -7,11 +7,10 @@ import random
 import keyboard
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
-NOME_ALVO = "Yuuki99"
+NOME_ALVO = "yuuki99"
 executando = True
 
-template_nome = cv2.imread("nome_template.png", 0)
-OCR_CONFIG = "--psm 6 --oem 3"
+template_nome = cv2.imread("name.png", 0)
 
 def preprocessar_imagem(frame):
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -19,89 +18,77 @@ def preprocessar_imagem(frame):
     frame = cv2.threshold(frame, 180, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     return frame
 
-def localizar_texto():
+def localizar_nome_por_template():
     screenshot = pyautogui.screenshot()
     frame = np.array(screenshot)
-    frame = preprocessar_imagem(frame)
-    res = cv2.matchTemplate(frame, template_nome, cv2.TM_CCOEFF_NORMED)
+    frame_gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    
+    res = cv2.matchTemplate(frame_gray, template_nome, cv2.TM_CCOEFF_NORMED)
     _, max_val, _, max_loc = cv2.minMaxLoc(res)
+    
     if max_val > 0.8:
         x, y = max_loc
         w, h = template_nome.shape[::-1]
-        return (x + w // 2, y + h // 2, x, y + h + 5, x + w, y + h + 10)
+        centro_nome = (x + w // 2, y + h // 2)
+        
+        x_start = x
+        y_start = y + h + 18
+        x_end = x + w
+        y_end = y_start + 6
+        
+        return centro_nome, (x_start, y_start, x_end, y_end)
+    
     return None
 
-def obter_porcentagem_vida(posicao_vida):
+def obter_porcentagem_vida_azul(posicao_vida):
     screenshot = pyautogui.screenshot()
     frame = np.array(screenshot)
+    
     x_start, y_start, x_end, y_end = posicao_vida
     barra_vida = frame[y_start:y_end, x_start:x_end]
+    
     barra_vida_hsv = cv2.cvtColor(barra_vida, cv2.COLOR_RGB2HSV)
-    mascara_amarela = cv2.inRange(barra_vida_hsv, (20, 100, 100), (30, 255, 255))
-    total_pixels = mascara_amarela.shape[1]
-    pixels_amarelos = cv2.countNonZero(mascara_amarela)
-    porcentagem_vida = (pixels_amarelos / total_pixels) * 100 if total_pixels > 0 else 0
-    return max(0, min(100, porcentagem_vida))
-
-def obter_tempo_recarga(pos_mouse):
-    pyautogui.moveTo(pos_mouse[0], pos_mouse[1], duration=random.uniform(0.1, 0.3))
-    time.sleep(random.uniform(0.3, 0.6))
-    screenshot = pyautogui.screenshot()
-    frame = np.array(screenshot)
-    frame = preprocessar_imagem(frame)
-    texto = pytesseract.image_to_string(frame, config=OCR_CONFIG)
-    for token in texto.split():
-        if token.isdigit():
-            return int(token)
-    return 0
+   
+    mascara_azul = cv2.inRange(barra_vida_hsv, (100, 100, 100), (140, 255, 255))
+    
+    total_pixels = mascara_azul.shape[1]
+    pixels_azuis = cv2.countNonZero(mascara_azul)
+    
+    porcentagem = (pixels_azuis / total_pixels) * 100 if total_pixels > 0 else 0
+    return max(0, min(100, porcentagem))
 
 def executar_acoes():
     global executando
-    resultado = localizar_texto()
+    resultado = localizar_nome_por_template()
+    
     if resultado and executando:
-        posicao = resultado[:2]
-        posicao_vida = resultado[2:]
-        pyautogui.moveTo(posicao[0] + random.randint(-5, 5), posicao[1] + random.randint(-5, 5), duration=random.uniform(0.2, 0.5))
-        time.sleep(random.uniform(0.3, 0.7))
+        posicao, posicao_vida = resultado
+        pyautogui.moveTo(posicao[0], posicao[1], duration=random.uniform(0.2, 0.5))
         pyautogui.click()
-        time.sleep(random.uniform(0.4, 1.0))
+        time.sleep(random.uniform(0.4, 0.9))
 
-        vida = obter_porcentagem_vida(posicao_vida)
-        posicoes_habilidades = {
+        vida = obter_porcentagem_vida_azul(posicao_vida)
+        print(f"Vida de {NOME_ALVO}: {vida:.2f}%")
+
+        habilidades = {
             'q': (905, 960),
             'w': (960, 960),
             'e': (1015, 960)
         }
 
-        tempo_q = obter_tempo_recarga(posicoes_habilidades['q'])
-        tempo_w = obter_tempo_recarga(posicoes_habilidades['w'])
-        tempo_e = obter_tempo_recarga(posicoes_habilidades['e'])
-
-        if vida <= 80 and tempo_q == 0:
+        if vida <= 80:
             pyautogui.press('q')
-            time.sleep(random.uniform(0.4, 0.7))
-        if vida <= 60 and tempo_w == 0:
+        if vida <= 60:
             pyautogui.press('w')
-            time.sleep(random.uniform(0.4, 0.7))
-        if vida <= 50 and tempo_e == 0:
+        if vida <= 50:
             pyautogui.press('e')
-            time.sleep(random.uniform(0.4, 0.7))
 
-        minha_vida = obter_porcentagem_vida((90, 1010, 220, 1025))
+        minha_vida = obter_porcentagem_vida_azul((90, 1010, 220, 1025))
         if minha_vida <= 40:
             pyautogui.press('r')
-            time.sleep(random.uniform(0.3, 0.6))
 
-        for _ in range(random.randint(1, 3)):
-            deslocamento_x = random.choice([-960, 960])
-            deslocamento_y = random.choice([-540, 540])
-            nova_posicao = (posicao[0] + deslocamento_x, posicao[1] + deslocamento_y)
-            pyautogui.moveTo(nova_posicao[0], nova_posicao[1], duration=random.uniform(0.4, 0.8))
-            time.sleep(random.uniform(1.0, 2.5))
-            pyautogui.click(button="right")
-        time.sleep(random.uniform(0.8, 1.5))
     else:
-        print("Nome não encontrado na tela. Tentando novamente...")
+        print("Nome não encontrado. Tentando novamente...")
 
 def toggle_execucao():
     global executando
@@ -111,5 +98,10 @@ def toggle_execucao():
 keyboard.add_hotkey("f8", toggle_execucao)
 
 while True:
-    executar_acoes()
-    time.sleep(random.uniform(4.0, 7.0))
+    if executando:
+        executar_acoes()
+    else:
+        print("Pausado...")
+
+    time.sleep(random.uniform(3.5, 6.5))
+
